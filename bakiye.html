@@ -96,7 +96,7 @@
                 <ul>
                     <li><a href="#" id="connect-wallet" class="wallet-connect">Cüzdan Bağla</a></li>
                     <li><a href="#" id="akis-link">Akış</a></li>
-                    <li id="bakiye-nav-item" style="display:none;"><a href="#" id="bakiye-link" style="color:#fff;font-weight:500;cursor:pointer;text-decoration:none;">Bakiye: <span id="mevcut-bakiye">0 TL</span></a></li>
+                    <li id="bakiye-nav-item" style="display:none;"><a href="#" id="bakiye-link" style="color:#fff;font-weight:500;cursor:pointer;text-decoration:none;">Bakiye: <span id="bakiye-goster">0 TL</span></a></li>
                     <li id="login-nav-item"><a href="giris.html" id="login-link" style="background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border-radius:22px;padding:8px 18px;font-weight:500;">Giriş Yap / Kaydol</a></li>
                 </ul>
             </nav>
@@ -134,22 +134,23 @@
                         .then(r => r.json())
                         .then(data => {
                             if (data.balance !== undefined) {
-                                bakiyeSpan.textContent = data.balance + ' TL';
-                                mevcutBakiyeSpan.textContent = data.balance + ' TL';
+                                bakiyeSpan.textContent = Number(data.balance).toFixed(2) + ' TL';
+                                mevcutBakiyeSpan.textContent = Number(data.balance).toFixed(2) + ' TL';
                             } else {
-                                bakiyeSpan.textContent = '0 TL';
-                                mevcutBakiyeSpan.textContent = '0 TL';
+                                bakiyeSpan.textContent = '0.00 TL';
+                                mevcutBakiyeSpan.textContent = '0.00 TL';
                             }
                         })
                         .catch(() => {
-                            bakiyeSpan.textContent = '0 TL';
-                            mevcutBakiyeSpan.textContent = '0 TL';
+                            bakiyeSpan.textContent = '0.00 TL';
+                            mevcutBakiyeSpan.textContent = '0.00 TL';
                         });
                 }
             }
         } else {
             if (bakiyeNavItem) bakiyeNavItem.style.display = 'none';
-            mevcutBakiyeSpan.textContent = '0 TL';
+            mevcutBakiyeSpan.textContent = '0.00 TL';
+            bakiyeSpan.textContent = '0.00 TL';
         }
     }
     window.addEventListener('DOMContentLoaded', function() {
