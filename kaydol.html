@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol - SolanaGram</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+            color: #fff;
+            padding: 0;
+            min-height: 72px;
+            border-bottom: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 72px;
+        }
+        #branding {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #branding h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #branding .logo-icon {
+            font-size: 1.5em;
+            margin-right: 2px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 18px;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            display: flex;
+            align-items: center;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 22px;
+            transition: background 0.18s, color 0.18s;
+            position: relative;
+        }
+        nav ul li a:hover, nav ul li a.active {
+            background: rgba(255,255,255,0.13);
+            color: #f0f2f5;
+        }
+        @media (max-width: 700px) {
+            html, body { max-width: 100vw; overflow-x: hidden; }
+            .container { max-width: 100vw; box-sizing: border-box; }
+            img, button, input, textarea { max-width: 100%; box-sizing: border-box; }
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                height: auto;
+                padding: 16px;
+                gap: 10px;
+            }
+            nav ul {
+                flex-wrap: wrap;
+                gap: 8px;
+                width: 100%;
+            }
+            nav ul li {
+                width: 100%;
+            }
+            nav ul li a {
+                display: block;
+                text-align: center;
+                padding: 12px;
+            }
+            .container {
+                margin: 30px auto;
+                padding: 24px;
+                width: 90%;
+            }
+            .btn {
+                padding: 14px 0;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                margin: 20px auto;
+                padding: 20px;
+            }
+            h2 {
+                font-size: 1.2rem;
+            }
+            .form-group {
+                margin-bottom: 16px;
+            }
+            input[type="text"], input[type="password"], input[type="email"] {
+                padding: 12px;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+            .btn {
+                font-size: 1rem;
+            }
+            label {
+                font-size: 0.95rem;
+            }
+        }
+        .container { max-width: 400px; margin: 60px auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(60,60,120,0.10); padding: 32px; }
+        h2 { font-size: 1.3rem; margin-bottom: 18px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; color: #555; }
+        input[type="text"], input[type="password"], input[type="email"] { width: 100%; padding: 10px; border-radius: 8px; border: 1.2px solid #ccc; font-size: 1rem; }
+        .btn { width: 100%; background: linear-gradient(90deg,#4776E6 0%,#8E54E9 100%); color: #fff; border: none; border-radius: 10px; padding: 12px 0; font-size: 1.08rem; font-weight: 500; cursor: pointer; transition: background 0.2s; margin-bottom: 10px; }
+        .btn:hover { background: linear-gradient(90deg,#8E54E9 0%,#4776E6 100%); }
+        .error { color: #d32f2f; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <div id="branding" style="display:flex;align-items:center;gap:10px;">
+                <img src="archiveMe-logo.png" alt="ArchiveMe Logo" style="height:56px;width:56px;object-fit:contain;">
+                <h1 style="font-size:1.6rem;font-weight:700;margin:0;letter-spacing:1px;display:flex;align-items:center;gap:8px;">
+                    <a href="Untitled-1.html" style="color:inherit;text-decoration:none;">ArchiveMe</a>
+                </h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" id="connect-wallet" class="wallet-connect">Cüzdan Bağla</a></li>
+                    <li><a href="#" id="akis-link">Akış</a></li>
+                    <li id="bakiye-nav-item" style="display:none;"><a href="#" id="bakiye-link" style="color:#fff;font-weight:500;cursor:pointer;text-decoration:none;">Bakiye: <span id="bakiye-goster">0 TL</span></a></li>
+                    <li id="login-nav-item"><a href="giris.html" id="login-link" style="background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border-radius:22px;padding:8px 18px;font-weight:500;">Giriş Yap / Kaydol</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <h2>Kayıt Ol</h2>
+        <div class="error" id="error"></div>
+        <form id="register-form">
+            <div class="form-group">
+                <label for="reg-username">Kullanıcı Adı</label>
+                <input type="text" id="reg-username" required>
+            </div>
+            <div class="form-group">
+                <label for="reg-email">E-posta</label>
+                <input type="email" id="reg-email" required>
+            </div>
+            <div class="form-group">
+                <label for="reg-phone">Telefon Numarası</label>
+                <input type="text" id="reg-phone" required>
+            </div>
+            <div class="form-group">
+                <label for="reg-password">Şifre</label>
+                <input type="password" id="reg-password" required>
+            </div>
+            <button type="submit" class="btn">Kayıt Ol</button>
+        </form>
+    </div>
+    <script>
+        if (!localStorage.getItem('users')) {
+            localStorage.setItem('users', JSON.stringify([{username: 'admin', password: '1234'}]));
+        }
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const password = document.getElementById('reg-password').value;
+
+            try {
+                const response = await fetch('http://localhost:3001/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, phone, password })
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    document.getElementById('error').textContent = data.error || 'Kayıt başarısız!';
+                    return;
+                }
+                localStorage.setItem('user', JSON.stringify(data.user));
+                window.location.href = 'profil.html';
+            } catch (err) {
+                document.getElementById('error').textContent = 'Sunucuya bağlanılamadı!';
+            }
+        });
+        window.addEventListener('DOMContentLoaded', function() {
+            var user = null;
+            try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+            var loginNavItem = document.getElementById('login-nav-item');
+            var bakiyeNavItem = document.getElementById('bakiye-nav-item');
+            if (user && user.username) {
+                loginNavItem.innerHTML = `<a href=\"profil.html\" id=\"user-link\" style=\"background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border-radius:22px;padding:8px 18px;font-weight:500;\">${user.username}</a>`;
+                if (bakiyeNavItem) {
+                    bakiyeNavItem.style.display = '';
+                    guncelleBakiyeGoster();
+                }
+            } else {
+                if (bakiyeNavItem) bakiyeNavItem.style.display = 'none';
+            }
+            var bakiyeLink = document.getElementById('bakiye-link');
+            if (bakiyeLink) {
+                bakiyeLink.onclick = function(e) {
+                    e.preventDefault();
+                    window.location.href = 'bakiye.html';
+                };
+            }
+        });
+        function guncelleBakiyeGoster() {
+            var user = null;
+            try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+            var bakiyeSpan = document.getElementById('bakiye-goster');
+            if (user && user.username === 'admin') {
+                bakiyeSpan.textContent = '∞ TL';
+            } else if (user && user.username) {
+                fetch(`http://localhost:3001/api/balance?username=${encodeURIComponent(user.username)}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.balance !== undefined) {
+                            bakiyeSpan.textContent = Number(data.balance).toFixed(2) + ' TL';
+                        } else {
+                            bakiyeSpan.textContent = '0.00 TL';
+                        }
+                    })
+                    .catch(() => {
+                        bakiyeSpan.textContent = '0.00 TL';
+                    });
+            } else {
+                bakiyeSpan.textContent = '0.00 TL';
+            }
+        }
+        document.getElementById('akis-link').onclick = function(e) {
+            e.preventDefault();
+            var user = null;
+            try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+            if (user && user.username) {
+                window.location.href = 'akis.html';
+            } else {
+                window.location.href = 'giris.html';
+            }
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Detayı - ArchiveMe</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+        header {
+            background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+            color: #fff;
+            padding: 0;
+            min-height: 72px;
+            border-bottom: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 72px;
+        }
+        #branding { display: flex; align-items: center; gap: 10px; }
+        #branding h1 { font-size: 1.6rem; font-weight: 700; margin: 0; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+        #branding .logo-icon { font-size: 1.5em; margin-right: 2px; }
+        nav ul { list-style: none; display: flex; gap: 18px; margin: 0; padding: 0; }
+        nav ul li { display: flex; align-items: center; }
+        nav ul li a { color: #fff; text-decoration: none; font-size: 1.05rem; font-weight: 500; padding: 8px 18px; border-radius: 22px; transition: background 0.18s, color 0.18s; position: relative; }
+        nav ul li a:hover, nav ul li a.active { background: rgba(255,255,255,0.13); color: #f0f2f5; }
+        @media (max-width: 700px) {
+            html, body { max-width: 100vw; overflow-x: hidden; }
+            .container { max-width: 100vw; box-sizing: border-box; }
+            img, button, input, textarea { max-width: 100%; box-sizing: border-box; }
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                height: auto;
+                padding: 16px;
+                gap: 10px;
+            }
+            nav ul {
+                flex-wrap: wrap;
+                gap: 8px;
+                width: 100%;
+            }
+            nav ul li {
+                width: 100%;
+            }
+            nav ul li a {
+                display: block;
+                text-align: center;
+                padding: 12px;
+            }
+        }
+        .container {
+            max-width: 1000px;
+            margin: 48px auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(60,60,120,0.10);
+            padding: 36px;
+            display: flex;
+            gap: 32px;
+        }
+        .post-image {
+            flex: 1;
+            max-width: 60%;
+        }
+        .post-image img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        .post-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .post-username {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .post-date {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .post-caption {
+            font-size: 1.1rem;
+            color: #444;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        .post-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+        .like-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.2s;
+        }
+        .like-btn.liked {
+            color: #e91e63;
+        }
+        .likes-count {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        .comments-section {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 400px;
+            padding-right: 12px;
+        }
+        .comment {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .comment-username {
+            font-weight: 600;
+            color: #333;
+        }
+        .comment-date {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .comment-text {
+            color: #444;
+            line-height: 1.4;
+        }
+        .comment-form {
+            margin-top: 24px;
+            display: flex;
+            gap: 12px;
+        }
+        .comment-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .comment-submit {
+            background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .comment-submit:hover {
+            opacity: 0.9;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 24px;
+            }
+            .post-image {
+                max-width: 100%;
+            }
+            .comments-section {
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <div id="branding" style="display:flex;align-items:center;gap:10px;">
+                <img src="archiveMe-logo.png" alt="ArchiveMe Logo" style="height:56px;width:56px;object-fit:contain;">
+                <h1 style="font-size:1.6rem;font-weight:700;margin:0;letter-spacing:1px;display:flex;align-items:center;gap:8px;">
+                    <a href="Untitled-1.html" style="color:inherit;text-decoration:none;">ArchiveMe</a>
+                </h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" id="connect-wallet" class="wallet-connect">Cüzdan Bağla</a></li>
+                    <li><a href="#" id="akis-link">Akış</a></li>
+                    <li id="bakiye-nav-item" style="display:none;"><a href="#" id="bakiye-link" style="color:#fff;font-weight:500;cursor:pointer;text-decoration:none;">Bakiye: <span id="bakiye-goster">0 TL</span></a></li>
+                    <li id="login-nav-item"><a href="giris.html" id="login-link" style="background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border-radius:22px;padding:8px 18px;font-weight:500;">Giriş Yap / Kaydol</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <div class="post-image">
+            <img id="post-image" src="" alt="Post görseli">
+        </div>
+        <div class="post-details">
+            <div class="post-header" style="position:relative;">
+                <div class="post-username" id="post-username"></div>
+                <div class="post-date" id="post-date"></div>
+                <!-- 3 nokta butonu -->
+                <button id="post-options-btn" style="position:absolute;top:0;right:0;background:none;border:none;cursor:pointer;font-size:1.7rem;color:#888;padding:4px 8px;line-height:1;">
+                    <span style="font-weight:900;letter-spacing:2px;">⋮</span>
+                </button>
+            </div>
+            <div class="post-caption" id="post-caption"></div>
+            <div class="post-actions">
+                <button class="like-btn" id="like-btn">❤️</button>
+                <span class="likes-count" id="likes-count">0 beğeni</span>
+            </div>
+            <div class="comments-section" id="comments-section"></div>
+            <form class="comment-form" id="comment-form">
+                <input type="text" class="comment-input" id="comment-input" placeholder="Yorum yaz..." required>
+                <button type="submit" class="comment-submit">Gönder</button>
+            </form>
+        </div>
+    </div>
+    <div id="custom-popup-overlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(40,40,60,0.18);z-index:99999;align-items:center;justify-content:center;"><div id="custom-popup" style="background:#fff;border-radius:18px;box-shadow:0 8px 32px rgba(60,60,120,0.18);padding:36px 32px;min-width:320px;max-width:90vw;display:flex;flex-direction:column;align-items:center;gap:18px;position:relative;"></div></div>
+    <script>
+    let currentPost = null;
+    let currentUser = null;
+
+    // Kullanıcı kontrolü
+    try {
+        currentUser = JSON.parse(localStorage.getItem('user'));
+        if (!currentUser || !currentUser.username) {
+            window.location.href = 'giris.html';
+        }
+    } catch(e) {
+        window.location.href = 'giris.html';
+    }
+
+    // URL'den post ID'sini al
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('id');
+    if (!postId) {
+        window.location.href = 'profil.html';
+    }
+
+    // Post detaylarını yükle
+    async function loadPost() {
+        try {
+            const response = await fetch(`http://localhost:3001/api/post/${postId}`);
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Post yüklenemedi!');
+            }
+            currentPost = data.post;
+            
+            // Post detaylarını göster
+            document.getElementById('post-image').src = currentPost.imageUrl;
+            document.getElementById('post-username').textContent = currentPost.username;
+            document.getElementById('post-date').textContent = new Date(currentPost.createdAt).toLocaleString('tr-TR');
+            document.getElementById('post-caption').textContent = currentPost.caption;
+            
+            // Beğeni sayısını güncelle
+            updateLikes();
+            
+            // Yorumları göster
+            showComments();
+        } catch (err) {
+            alert('Post yüklenirken hata oluştu!');
+            window.location.href = 'profil.html';
+        }
+    }
+
+    // Beğeni durumunu güncelle
+    function updateLikes() {
+        const likeBtn = document.getElementById('like-btn');
+        const likesCount = document.getElementById('likes-count');
+        
+        likesCount.textContent = `${currentPost.likes.length} beğeni`;
+        if (currentPost.likes.includes(currentUser.username)) {
+            likeBtn.classList.add('liked');
+        } else {
+            likeBtn.classList.remove('liked');
+        }
+    }
+
+    // Yorumları göster
+    function showComments() {
+        const commentsSection = document.getElementById('comments-section');
+        if (currentPost.comments.length === 0) {
+            commentsSection.innerHTML = '<div style="color:#888;text-align:center;padding:24px;">Henüz yorum yapılmamış.</div>';
+            return;
+        }
+        
+        commentsSection.innerHTML = currentPost.comments.map(comment => `
+            <div class="comment">
+                <div class="comment-header">
+                    <div class="comment-username">${comment.username}</div>
+                    <div class="comment-date">${new Date(comment.createdAt).toLocaleString('tr-TR')}</div>
+                </div>
+                <div class="comment-text">${comment.text}</div>
+            </div>
+        `).join('');
+    }
+
+    // Beğeni butonu
+    document.getElementById('like-btn').onclick = async function() {
+        try {
+            const response = await fetch('http://localhost:3001/api/post/like', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    postId: currentPost._id,
+                    username: currentUser.username
+                })
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Beğeni işlemi başarısız!');
+            }
+            currentPost.likes = data.likes;
+            updateLikes();
+        } catch (err) {
+            alert('Beğeni işlemi sırasında hata oluştu!');
+        }
+    };
+
+    // Yorum formu
+    document.getElementById('comment-form').onsubmit = async function(e) {
+        e.preventDefault();
+        const commentInput = document.getElementById('comment-input');
+        const text = commentInput.value.trim();
+        if (!text) return;
+
+        try {
+            const response = await fetch('http://localhost:3001/api/post/comment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    postId: currentPost._id,
+                    username: currentUser.username,
+                    text: text
+                })
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Yorum eklenemedi!');
+            }
+            currentPost.comments = data.comments;
+            commentInput.value = '';
+            showComments();
+        } catch (err) {
+            alert('Yorum eklenirken hata oluştu!');
+        }
+    };
+
+    // Bakiye gösterimi (arsiv.html'den alındı)
+    function guncelleBakiyeGoster() {
+        var bakiyeSpan = document.getElementById('bakiye-goster');
+        if (currentUser && currentUser.username === 'admin') {
+            bakiyeSpan.textContent = '∞ TL';
+        } else if (currentUser && currentUser.username) {
+            fetch(`http://localhost:3001/api/balance?username=${encodeURIComponent(currentUser.username)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.balance !== undefined) {
+                        bakiyeSpan.textContent = Number(data.balance).toFixed(2) + ' TL';
+                    } else {
+                        bakiyeSpan.textContent = '0.00 TL';
+                    }
+                })
+                .catch(() => {
+                    bakiyeSpan.textContent = '0.00 TL';
+                });
+        } else {
+            bakiyeSpan.textContent = '0.00 TL';
+        }
+    }
+    window.addEventListener('DOMContentLoaded', function() {
+        guncelleBakiyeGoster();
+        // Kullanıcı adı nav güncellemesi
+        var loginNavItem = document.getElementById('login-nav-item');
+        var bakiyeNavItem = document.getElementById('bakiye-nav-item');
+        if (currentUser && currentUser.username) {
+            loginNavItem.innerHTML = `<a href="profil.html" id="user-link" style="background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border-radius:22px;padding:8px 18px;font-weight:500;">${currentUser.username}</a>`;
+            if (bakiyeNavItem) bakiyeNavItem.style.display = '';
+        } else {
+            if (bakiyeNavItem) bakiyeNavItem.style.display = 'none';
+        }
+        var bakiyeLink = document.getElementById('bakiye-link');
+        if (bakiyeLink) {
+            bakiyeLink.onclick = function(e) {
+                e.preventDefault();
+                window.location.href = 'bakiye.html';
+            };
+        }
+    });
+    // Akış linki tıklama fonksiyonu (arsiv.html'den)
+    document.getElementById('akis-link').onclick = function(e) {
+        e.preventDefault();
+        var user = null;
+        try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+        if (user && user.username) {
+            window.location.href = 'akis.html';
+        } else {
+            window.location.href = 'giris.html';
+        }
+    };
+
+    // Modern popup fonksiyonları (arsiv.html'den alınan ve geliştirilen)
+    function showCustomPopup(html, onClose) {
+        const overlay = document.getElementById('custom-popup-overlay');
+        const popup = document.getElementById('custom-popup');
+        popup.innerHTML = html;
+        overlay.style.display = 'flex';
+        setTimeout(() => {
+            overlay.onclick = function(e) {
+                if (e.target === overlay) {
+                    overlay.style.display = 'none';
+                    if (onClose) onClose();
+                }
+            };
+        }, 0);
+    }
+    function closeCustomPopup() {
+        document.getElementById('custom-popup-overlay').style.display = 'none';
+    }
+
+    // 3 nokta butonu popup menüsü
+    document.getElementById('post-options-btn').onclick = function(e) {
+        e.stopPropagation();
+        showCustomPopup(`
+            <div style='font-size:1.15em;font-weight:600;margin-bottom:8px;'>Post Seçenekleri</div>
+            <button id='edit-caption-btn' style='width:100%;background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border:none;border-radius:8px;padding:10px 0;font-size:1.05em;font-weight:500;cursor:pointer;margin-bottom:10px;'>Açıklamayı Değiştir</button>
+            <button id='archive-post-btn' style='width:100%;background:linear-gradient(90deg,#11998e 0%,#38ef7d 100%);color:#fff;border:none;border-radius:8px;padding:10px 0;font-size:1.05em;font-weight:500;cursor:pointer;'>Postu Arşivle</button>
+            <button onclick='closeCustomPopup()' style='margin-top:18px;background:#eee;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Kapat</button>
+        `);
+        setTimeout(() => {
+            document.getElementById('edit-caption-btn').onclick = function() {
+                closeCustomPopup();
+                showCustomPopup(`
+                    <div style='font-size:1.08em;font-weight:500;margin-bottom:10px;'>Yeni açıklamayı girin:</div>
+                    <input id='new-caption-input' type='text' style='width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:1em;margin-bottom:12px;' value="${currentPost.caption.replace(/"/g, '&quot;')}">
+                    <div style='display:flex;gap:12px;'>
+                        <button id='caption-cancel' style='background:#eee;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Vazgeç</button>
+                        <button id='caption-save' style='background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Kaydet</button>
+                    </div>
+                `);
+                document.getElementById('caption-cancel').onclick = closeCustomPopup;
+                document.getElementById('caption-save').onclick = async function() {
+                    const newCaption = document.getElementById('new-caption-input').value.trim();
+                    if (!newCaption) return;
+                    closeCustomPopup();
+                    showCustomPopup(`
+                        <div style='font-size:1.08em;font-weight:500;margin-bottom:10px;'>Açıklamayı değiştirmek istediğinize emin misiniz?</div>
+                        <div style='display:flex;gap:12px;'>
+                            <button id='edit-confirm-cancel' style='background:#eee;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Vazgeç</button>
+                            <button id='edit-confirm-ok' style='background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Evet, Değiştir</button>
+                        </div>
+                    `);
+                    document.getElementById('edit-confirm-cancel').onclick = closeCustomPopup;
+                    document.getElementById('edit-confirm-ok').onclick = async function() {
+                        try {
+                            const response = await fetch('http://localhost:3001/api/post/edit-caption', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ postId: currentPost._id, username: currentUser.username, caption: newCaption })
+                            });
+                            const data = await response.json();
+                            if (!response.ok) throw new Error(data.error || 'Açıklama güncellenemedi!');
+                            currentPost.caption = data.caption;
+                            document.getElementById('post-caption').textContent = data.caption;
+                            closeCustomPopup();
+                        } catch (err) {
+                            closeCustomPopup();
+                            showCustomPopup(`<div style='color:#d32f2f;font-weight:600;'>${err.message}</div><button onclick='closeCustomPopup()' style='margin-top:12px;background:#eee;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Kapat</button>`);
+                        }
+                    };
+                };
+            };
+            document.getElementById('archive-post-btn').onclick = function() {
+                closeCustomPopup();
+                showCustomPopup(`
+                    <div style='font-size:1.08em;font-weight:500;margin-bottom:10px;'>Bu postu arşivlemek istediğinize emin misiniz?</div>
+                    <div style='display:flex;gap:12px;'>
+                        <button id='archive-cancel' style='background:#eee;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Vazgeç</button>
+                        <button id='archive-ok' style='background:linear-gradient(90deg,#11998e 0%,#38ef7d 100%);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Evet, Arşivle</button>
+                    </div>
+                `);
+                document.getElementById('archive-cancel').onclick = closeCustomPopup;
+                document.getElementById('archive-ok').onclick = async function() {
+                    try {
+                        const response = await fetch('http://localhost:3001/api/archive', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ postId: currentPost._id, username: currentUser.username })
+                        });
+                        const data = await response.json();
+                        if (!response.ok) throw new Error(data.error || 'Arşivleme başarısız!');
+                        closeCustomPopup();
+                        showCustomPopup(`<div style='color:#388e3c;font-weight:600;'>Post arşivlendi!</div><button onclick='window.location.href="arsiv.html"' style='margin-top:12px;background:linear-gradient(90deg,#11998e 0%,#38ef7d 100%);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Arşive Git</button>`);
+                    } catch (err) {
+                        closeCustomPopup();
+                        showCustomPopup(`<div style='color:#d32f2f;font-weight:600;'>${err.message}</div><button onclick='closeCustomPopup()' style='margin-top:12px;background:#eee;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Kapat</button>`);
+                    }
+                };
+            };
+        }, 0);
+    };
+
+    // Sayfa yüklendiğinde post detaylarını getir
+    loadPost();
+    </script>
+</body>
+</html> 

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - SolanaGram</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+            color: #fff;
+            padding: 0;
+            min-height: 72px;
+            border-bottom: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 72px;
+        }
+        #branding {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #branding h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #branding .logo-icon {
+            font-size: 1.5em;
+            margin-right: 2px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 18px;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            display: flex;
+            align-items: center;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 22px;
+            transition: background 0.18s, color 0.18s;
+            position: relative;
+        }
+        nav ul li a:hover, nav ul li a.active {
+            background: rgba(255,255,255,0.13);
+            color: #f0f2f5;
+        }
+        @media (max-width: 700px) {
+            html, body { max-width: 100vw; overflow-x: hidden; }
+            .container { max-width: 100vw; box-sizing: border-box; }
+            img, button, input, textarea { max-width: 100%; box-sizing: border-box; }
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                height: auto;
+                padding: 16px;
+                gap: 10px;
+            }
+            nav ul {
+                flex-wrap: wrap;
+                gap: 8px;
+                width: 100%;
+            }
+            nav ul li {
+                width: 100%;
+            }
+            nav ul li a {
+                display: block;
+                text-align: center;
+                padding: 12px;
+            }
+            .container {
+                margin: 20px auto;
+                padding: 20px;
+                width: 90%;
+            }
+            #profile-pic-main {
+                width: 60px;
+                height: 60px;
+            }
+            #profile-username {
+                font-size: 1.3em;
+            }
+            #settings-btn {
+                font-size: 1.5em;
+            }
+            #settings-drawer {
+                width: 100%;
+                right: -100%;
+            }
+            #custom-popup {
+                width: 90%;
+                padding: 24px 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+            }
+            #user-posts {
+                margin-top: 20px;
+            }
+            #user-posts > div {
+                grid-template-columns: 1fr;
+            }
+            .profile-info {
+                font-size: 1rem;
+            }
+        }
+        .container { max-width: 480px; margin: 40px auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(60,60,120,0.10); padding: 32px; }
+        h2 { font-size: 1.3rem; margin-bottom: 18px; }
+        .profile-info { font-size: 1.08rem; color: #333; margin-bottom: 18px; }
+        .logout-btn { background: linear-gradient(90deg,#4776E6 0%,#8E54E9 100%); color: #fff; border: none; border-radius: 10px; padding: 12px 24px; font-size: 1.08rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .logout-btn:hover { background: linear-gradient(90deg,#8E54E9 0%,#4776E6 100%); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <div id="branding" style="display:flex;align-items:center;gap:10px;">
+                <img src="archiveMe-logo.png" alt="ArchiveMe Logo" style="height:56px;width:56px;object-fit:contain;">
+                <h1 style="font-size:1.6rem;font-weight:700;margin:0;letter-spacing:1px;display:flex;align-items:center;gap:8px;">
+                    <a href="Untitled-1.html" style="color:inherit;text-decoration:none;">ArchiveMe</a>
+                </h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" id="connect-wallet" class="wallet-connect">Cüzdan Bağla</a></li>
+                    <li><a href="#" id="akis-link">Akış</a></li>
+                    <li id="bakiye-nav-item" style="display:none;"><a href="#" id="bakiye-link" style="color:#fff;font-weight:500;cursor:pointer;text-decoration:none;">Bakiye: <span id="bakiye-goster">0.00 TL</span></a></li>
+                    <li id="login-nav-item"><a href="giris.html" id="login-link" style="background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border-radius:22px;padding:8px 18px;font-weight:500;">Giriş Yap / Kaydol</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <div style="display:flex;align-items:center;gap:18px;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:18px;">
+                <div id="profile-pic-main" style="width:72px;height:72px;border-radius:50%;overflow:hidden;background:#eee;display:flex;align-items:center;justify-content:center;"></div>
+                <span id="profile-username" style="font-size:1.5em;font-weight:700;color:#333;"></span>
+            </div>
+            <button id="settings-btn" style="background:none;border:none;font-size:1.7em;cursor:pointer;align-self:flex-start;">⚙️</button>
+        </div>
+        <div class="profile-info" id="profile-info"></div>
+        <div id="drawer-overlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(40,40,60,0.10);z-index:9998;"></div>
+        <div id="settings-drawer" style="position:fixed;top:0;right:-320px;width:320px;height:100vh;background:#fff;z-index:9999;transition:right 0.3s;padding:0;display:flex;flex-direction:column;">
+            <div style="padding:28px 24px 18px 24px;border-bottom:1.5px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-size:1.18em;font-weight:700;color:#333;">Ayarlar</span>
+                <button onclick="closeDrawer()" style="background:none;border:none;font-size:1.5em;cursor:pointer;">✖️</button>
+            </div>
+            <div style="padding:24px 24px 0 24px;display:flex;flex-direction:column;gap:18px;flex:1;position:relative;min-height:340px;">
+                <div id="profile-upload-area" style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                    <div id="profile-upload-pic" style="width:88px;height:88px;border-radius:50%;background:#eee;overflow:hidden;position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                        <img id="profile-upload-img" src="" style="width:100%;height:100%;object-fit:cover;display:none;">
+                        <div id="profile-upload-overlay" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(60,60,120,0.18);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;">
+                            <span style="font-size:2em;color:#555;">📷</span>
+                        </div>
+                        <div id="profile-upload-check" style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;"><span style="font-size:2em;color:#4caf50;">✔️</span></div>
+                    </div>
+                    <input type="file" id="profile-image-input" accept="image/*" style="display:none;">
+                    <span style="font-size:0.98em;color:#888;">Fotoğrafı değiştirmek için tıkla</span>
+                </div>
+                <hr style="border:none;border-top:1px solid #eee;margin:0;">
+                <button onclick="window.location.href='arsiv.html'" style="background:linear-gradient(90deg,#11998e 0%,#38ef7d 100%);color:#fff;border:none;border-radius:10px;padding:12px 0;font-weight:600;cursor:pointer;transition:background 0.18s;">Arşiv</button>
+                <button onclick="showProfileDescPopup()" style="background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border:none;border-radius:10px;padding:12px 0;font-weight:600;cursor:pointer;transition:background 0.18s;">Profil Açıklaması Ekle</button>
+                <button onclick="logout()" style="background:#f5f5f5;color:#333;border:none;border-radius:10px;padding:12px 0;font-weight:600;cursor:pointer;transition:background 0.18s;">Oturumu Kapat</button>
+                <button onclick="deleteAccount()" style="background:linear-gradient(90deg,#FF512F 0%,#DD2476 100%);color:#fff;border:none;border-radius:10px;padding:12px 0;font-weight:600;cursor:pointer;transition:background 0.18s;position:absolute;bottom:24px;left:24px;right:24px;">Hesabı Sil</button>
+            </div>
+        </div>
+        <div style="margin-top:24px;margin-bottom:24px;">
+            <!-- Arşiv butonunu kaldırıyorum -->
+        </div>
+        <div id="user-posts" style="margin-top:32px;"></div>
+    </div>
+    <div id="custom-popup-overlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(40,40,60,0.18);z-index:99999;align-items:center;justify-content:center;"><div id="custom-popup" style="background:#fff;border-radius:18px;box-shadow:0 8px 32px rgba(60,60,120,0.18);padding:36px 32px;min-width:320px;max-width:90vw;display:flex;flex-direction:column;align-items:center;gap:18px;position:relative;"></div></div>
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) {
+            window.location.href = 'giris.html';
+        } else {
+            document.getElementById('profile-info').innerHTML = `<b>Kullanıcı Adı:</b> ${user.username}`;
+        }
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'giris.html';
+        }
+        window.addEventListener('DOMContentLoaded', function() {
+            var user = null;
+            try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+            var loginNavItem = document.getElementById('login-nav-item');
+            var bakiyeNavItem = document.getElementById('bakiye-nav-item');
+            if (user && user.username) {
+                loginNavItem.innerHTML = `<a href=\"profil.html\" id=\"user-link\" style=\"background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border-radius:22px;padding:8px 18px;font-weight:500;\">${user.username}</a>`;
+                if (bakiyeNavItem) {
+                    bakiyeNavItem.style.display = '';
+                    guncelleBakiyeGoster();
+                }
+                fetch(`http://localhost:3001/api/posts?username=${encodeURIComponent(user.username)}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        const postsDiv = document.getElementById('user-posts');
+                        if (data.posts && data.posts.length > 0) {
+                            postsDiv.innerHTML = '<h3 style="margin-bottom:16px;">Paylaşımlarınız</h3>' +
+                                '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;">' +
+                                data.posts.map(post => `
+                                    <div style="background:#fafbff;border-radius:12px;box-shadow:0 2px 8px rgba(60,60,120,0.08);padding:14px;position:relative;display:flex;align-items:flex-start;gap:10px;">
+                                        <img src="${post.imageUrl}" alt="görsel" style="max-width:100%;border-radius:8px;margin-bottom:10px;flex:1;cursor:pointer;" onclick="window.location.href='post.html?id=${post._id}'">
+                                        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+                                            <button onclick="togglePostMenu('${post._id}')" style="background:none;border:none;font-size:1.4em;cursor:pointer;">⋮</button>
+                                            <div id="post-menu-${post._id}" style="display:none;position:absolute;top:38px;right:18px;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(60,60,120,0.13);min-width:120px;z-index:10;">
+                                                <button onclick="arsivlePost('${post._id}')" style="width:100%;background:none;border:none;padding:10px 0;font-size:1em;cursor:pointer;color:#333;">Arşivle</button>
+                                                <button onclick="degistirAciklama('${post._id}')" style="width:100%;background:none;border:none;padding:10px 0;font-size:1em;cursor:pointer;color:#333;">Açıklamayı Değiştir</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('') + '</div>';
+                        } else {
+                            postsDiv.innerHTML = '<div style="color:#888;">Henüz hiç paylaşımınız yok.</div>';
+                        }
+                    })
+                    .catch(() => {
+                        document.getElementById('user-posts').innerHTML = '<div style="color:#d32f2f;">Paylaşımlar yüklenemedi.</div>';
+                    });
+                // PROFIL FOTOĞRAFINI BACKEND'DEN ÇEK
+                fetch(`http://localhost:3001/api/profile-image?username=${encodeURIComponent(user.username)}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.profileImage) setProfilePic(data.profileImage);
+                        else setProfilePic(null);
+                    })
+                    .catch(() => setProfilePic(null));
+                // PROFIL AÇIKLAMASINI BACKEND'DEN ÇEK VE GÖSTER
+                fetch(`http://localhost:3001/api/profile-desc?username=${encodeURIComponent(user.username)}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        let infoDiv = document.getElementById('profile-info');
+                        if (data.profileDesc) {
+                            infoDiv.style.display = 'block';
+                            infoDiv.innerHTML = `<div style='margin-top:8px;color:#555;font-size:1.05em;'>${data.profileDesc}</div>`;
+                        } else {
+                            infoDiv.style.display = 'none';
+                            infoDiv.innerHTML = '';
+                        }
+                    });
+            } else {
+                if (bakiyeNavItem) bakiyeNavItem.style.display = 'none';
+            }
+            var bakiyeLink = document.getElementById('bakiye-link');
+            if (bakiyeLink) {
+                bakiyeLink.onclick = function(e) {
+                    e.preventDefault();
+                    window.location.href = 'bakiye.html';
+                };
+            }
+            // Modern profil fotoğrafı yükleme alanı için JS
+            const uploadPic = document.getElementById('profile-upload-pic');
+            const uploadImg = document.getElementById('profile-upload-img');
+            const uploadOverlay = document.getElementById('profile-upload-overlay');
+            const uploadInput = document.getElementById('profile-image-input');
+            const uploadCheck = document.getElementById('profile-upload-check');
+
+            // Profil fotoğrafını backend'den çek ve göster
+            fetch(`http://localhost:3001/api/profile-image?username=${encodeURIComponent(user.username)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.profileImage) {
+                        uploadImg.src = data.profileImage;
+                        uploadImg.style.display = 'block';
+                    } else {
+                        uploadImg.src = '';
+                        uploadImg.style.display = 'none';
+                    }
+                });
+
+            uploadPic.addEventListener('mouseenter', function() {
+                uploadOverlay.style.opacity = 1;
+            });
+            uploadPic.addEventListener('mouseleave', function() {
+                uploadOverlay.style.opacity = 0;
+            });
+            uploadPic.addEventListener('click', function() {
+                uploadInput.click();
+            });
+            uploadInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        fetch('http://localhost:3001/api/profile-image', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username: user.username, image: e.target.result })
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.success) {
+                                uploadImg.src = data.profileImage;
+                                uploadImg.style.display = 'block';
+                                uploadCheck.style.opacity = 1;
+                                setTimeout(() => { uploadCheck.style.opacity = 0; }, 1200);
+                            } else {
+                                alert(data.error || 'Profil fotoğrafı güncellenemedi!');
+                            }
+                        })
+                        .catch(() => alert('Sunucuya bağlanılamadı!'));
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+            // Çark menüsü açma
+            document.getElementById('settings-btn').onclick = function() {
+                document.getElementById('settings-drawer').style.right = '0';
+                document.getElementById('drawer-overlay').style.display = 'block';
+            };
+            document.getElementById('profile-username').textContent = user && user.username ? user.username : '';
+            document.getElementById('profile-info').style.display = 'none';
+        });
+        function guncelleBakiyeGoster() {
+            var user = null;
+            try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+            var bakiyeSpan = document.getElementById('bakiye-goster');
+            if (user && user.username === 'admin') {
+                bakiyeSpan.textContent = '∞ TL';
+            } else if (user && user.username) {
+                fetch(`http://localhost:3001/api/balance?username=${encodeURIComponent(user.username)}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.balance !== undefined) {
+                            bakiyeSpan.textContent = Number(data.balance).toFixed(2) + ' TL';
+                        } else {
+                            bakiyeSpan.textContent = '0.00 TL';
+                        }
+                    })
+                    .catch(() => {
+                        bakiyeSpan.textContent = '0.00 TL';
+                    });
+            } else {
+                bakiyeSpan.textContent = '0.00 TL';
+            }
+        }
+        function setProfilePic(img) {
+            var picHeader = document.getElementById('profile-pic-main');
+            if (img) {
+                picHeader.innerHTML = `<img src="${img}" style="width:100%;height:100%;object-fit:cover;">`;
+            } else {
+                picHeader.innerHTML = '';
+            }
+        }
+        function closeDrawer() {
+            document.getElementById('settings-drawer').style.right = '-320px';
+            document.getElementById('drawer-overlay').style.display = 'none';
+        }
+        document.getElementById('drawer-overlay').onclick = function() {
+            closeDrawer();
+        };
+        function showCustomPopup(html, onClose) {
+            const overlay = document.getElementById('custom-popup-overlay');
+            const popup = document.getElementById('custom-popup');
+            popup.innerHTML = html;
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                overlay.onclick = function(e) {
+                    if (e.target === overlay) {
+                        overlay.style.display = 'none';
+                        if (onClose) onClose();
+                    }
+                };
+            }, 0);
+        }
+        function closeCustomPopup() {
+            document.getElementById('custom-popup-overlay').style.display = 'none';
+        }
+        function showChangePassword() {
+            showCustomPopup(`
+                <div style='font-size:1.15em;font-weight:600;margin-bottom:8px;'>Şifre Değiştir</div>
+                <input type='password' id='popup-oldpass' placeholder='Mevcut şifre' style='width:100%;border-radius:8px;border:1px solid #ccc;padding:8px;font-size:1em;margin-bottom:8px;'>
+                <input type='password' id='popup-newpass' placeholder='Yeni şifre' style='width:100%;border-radius:8px;border:1px solid #ccc;padding:8px;font-size:1em;'>
+                <div style='display:flex;gap:12px;margin-top:10px;'>
+                    <button id='popup-cancel' style='background:#eee;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Vazgeç</button>
+                    <button id='popup-ok' style='background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Değiştir</button>
+                </div>
+            `);
+            document.getElementById('popup-cancel').onclick = closeCustomPopup;
+            document.getElementById('popup-ok').onclick = function() {
+                const oldPassword = document.getElementById('popup-oldpass').value;
+                const newPassword = document.getElementById('popup-newpass').value;
+                if (!oldPassword || !newPassword) return;
+                const user = JSON.parse(localStorage.getItem('user'));
+                fetch('http://localhost:3001/api/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: user.username, oldPassword, newPassword })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        closeCustomPopup();
+                        alert('Şifre başarıyla değiştirildi!');
+                    } else {
+                        alert(data.error || 'Şifre değiştirilemedi!');
+                    }
+                })
+                .catch(() => alert('Sunucuya bağlanılamadı!'));
+            };
+        }
+        function deleteAccount() {
+            showCustomPopup(`
+                <div style='font-size:1.15em;font-weight:600;margin-bottom:8px;'>Hesabınızı ve tüm paylaşımlarınızı silmek istediğinize emin misiniz?</div>
+                <input type='password' id='popup-delpass' placeholder='Şifrenizi girin' style='width:100%;border-radius:8px;border:1px solid #ccc;padding:8px;font-size:1em;'>
+                <div style='display:flex;gap:12px;margin-top:10px;'>
+                    <button id='popup-cancel' style='background:#eee;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Vazgeç</button>
+                    <button id='popup-ok' style='background:linear-gradient(90deg,#FF512F 0%,#DD2476 100%);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Evet, Sil</button>
+                </div>
+            `);
+            document.getElementById('popup-cancel').onclick = closeCustomPopup;
+            document.getElementById('popup-ok').onclick = function() {
+                const password = document.getElementById('popup-delpass').value;
+                if (!password) return;
+                const user = JSON.parse(localStorage.getItem('user'));
+                fetch('http://localhost:3001/api/delete-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: user.username, password })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        closeCustomPopup();
+                        alert('Hesabınız silindi!');
+                        localStorage.removeItem('user');
+                        window.location.href = 'giris.html';
+                    } else {
+                        alert(data.error || 'Hesap silinemedi!');
+                    }
+                })
+                .catch(() => alert('Sunucuya bağlanılamadı!'));
+            };
+        }
+        window.togglePostMenu = function(postId) {
+            var menu = document.getElementById('post-menu-' + postId);
+            if (menu.style.display === 'block') menu.style.display = 'none';
+            else menu.style.display = 'block';
+            setTimeout(() => { document.addEventListener('click', hideMenu, { once: true }); }, 0);
+            function hideMenu(e) {
+                if (!menu.contains(e.target)) menu.style.display = 'none';
+            }
+        };
+        window.arsivlePost = function(postId) {
+            showCustomPopup(`
+                <div style='font-size:1.15em;font-weight:600;margin-bottom:8px;'>Bu paylaşımı arşivlemek istediğinize emin misiniz?</div>
+                <div style='display:flex;gap:12px;margin-top:10px;'>
+                    <button id='popup-cancel' style='background:#eee;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Vazgeç</button>
+                    <button id='popup-ok' style='background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Evet, Arşivle</button>
+                </div>
+            `);
+            document.getElementById('popup-cancel').onclick = closeCustomPopup;
+            document.getElementById('popup-ok').onclick = async function() {
+                const user = JSON.parse(localStorage.getItem('user'));
+                try {
+                    const response = await fetch('http://localhost:3001/api/archive', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ postId, username: user.username })
+                    });
+                    const data = await response.json();
+                    if (!response.ok) {
+                        alert(data.error || 'Arşivleme başarısız!');
+                        return;
+                    }
+                    closeCustomPopup();
+                    location.reload();
+                } catch (err) {
+                    alert('Sunucuya bağlanılamadı!');
+                }
+            };
+        };
+        window.degistirAciklama = function(postId) {
+            showCustomPopup(`
+                <div style='font-size:1.15em;font-weight:600;margin-bottom:8px;'>Yeni açıklama girin</div>
+                <textarea id='popup-caption' style='width:100%;min-height:60px;border-radius:8px;border:1px solid #ccc;padding:8px;font-size:1em;'></textarea>
+                <div style='display:flex;gap:12px;margin-top:10px;'>
+                    <button id='popup-cancel' style='background:#eee;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Vazgeç</button>
+                    <button id='popup-ok' style='background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Kaydet</button>
+                </div>
+            `);
+            document.getElementById('popup-cancel').onclick = closeCustomPopup;
+            document.getElementById('popup-ok').onclick = function() {
+                const yeniAciklama = document.getElementById('popup-caption').value;
+                if (!yeniAciklama) return;
+                const user = JSON.parse(localStorage.getItem('user'));
+                fetch('http://localhost:3001/api/update-post', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ postId, username: user.username, caption: yeniAciklama })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        closeCustomPopup();
+                        alert('Açıklama güncellendi!');
+                        location.reload();
+                    } else {
+                        alert(data.error || 'Açıklama güncellenemedi!');
+                    }
+                })
+                .catch(() => alert('Sunucuya bağlanılamadı!'));
+            };
+        };
+        function showProfileDescPopup() {
+            fetch(`http://localhost:3001/api/profile-desc?username=${encodeURIComponent(user.username)}`)
+                .then(r => r.json())
+                .then(data => {
+                    const mevcut = data.profileDesc || '';
+                    showCustomPopup(`
+                        <div style='font-size:1.15em;font-weight:600;margin-bottom:8px;'>Profil Açıklaması</div>
+                        <textarea id='popup-profile-desc' maxlength='200' placeholder='Kendinizi tanıtın (max 200 karakter)' style='width:100%;min-height:60px;border-radius:8px;border:1px solid #ccc;padding:8px;font-size:1em;'>${mevcut}</textarea>
+                        <div style='display:flex;gap:12px;margin-top:10px;'>
+                            <button id='popup-cancel' style='background:#eee;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Vazgeç</button>
+                            <button id='popup-ok' style='background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-weight:500;cursor:pointer;'>Kaydet</button>
+                        </div>
+                    `);
+                    document.getElementById('popup-cancel').onclick = closeCustomPopup;
+                    document.getElementById('popup-ok').onclick = function() {
+                        const desc = document.getElementById('popup-profile-desc').value.trim();
+                        if (desc.length > 200) {
+                            alert('Açıklama 200 karakterden uzun olamaz!');
+                            return;
+                        }
+                        fetch('http://localhost:3001/api/profile-desc', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username: user.username, profileDesc: desc })
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.success) {
+                                closeCustomPopup();
+                                // Profilde göster
+                                let infoDiv = document.getElementById('profile-info');
+                                infoDiv.style.display = 'block';
+                                infoDiv.innerHTML = `<div style='margin-top:8px;color:#555;font-size:1.05em;'>${desc}</div>`;
+                            } else {
+                                alert(data.error || 'Profil açıklaması kaydedilemedi!');
+                            }
+                        })
+                        .catch(() => alert('Sunucuya bağlanılamadı!'));
+                    };
+                });
+        }
+        document.getElementById('akis-link').onclick = function(e) {
+            e.preventDefault();
+            var user = null;
+            try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+            if (user && user.username) {
+                window.location.href = 'akis.html';
+            } else {
+                window.location.href = 'giris.html';
+            }
+        };
+    </script>
+</body>
+</html> 

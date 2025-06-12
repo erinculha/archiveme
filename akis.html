@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akış - SolanaGram</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #181818;
+            color: #fff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            overflow: hidden;
+        }
+        .reel-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: #181818;
+        }
+        .reel-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(24,24,24,0.92);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            padding: 32px 24px 24px 24px;
+            max-width: 420px;
+            margin: 0 auto;
+            width: 100vw;
+        }
+        .reel-image {
+            max-width: 100vw;
+            max-height: 60vh;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+            margin-bottom: 18px;
+            background: #222;
+            object-fit: contain;
+        }
+        .reel-username {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #8E54E9;
+            margin-bottom: 8px;
+        }
+        .reel-caption {
+            font-size: 1.08em;
+            color: #fff;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+        .reel-date {
+            font-size: 0.95em;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+        .reel-nav {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100vw;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+        .reel-btn {
+            background: rgba(30,30,30,0.7);
+            border: none;
+            color: #fff;
+            font-size: 2.2em;
+            border-radius: 50%;
+            width: 54px;
+            height: 54px;
+            margin: 0 12px;
+            cursor: pointer;
+            pointer-events: all;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.18s;
+        }
+        .reel-btn:active {
+            background: #8E54E9;
+        }
+        .reel-empty-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(24,24,24,0.92);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            padding: 40px 28px 32px 28px;
+            max-width: 420px;
+            margin: 0 auto;
+            width: 100vw;
+        }
+        .reel-empty-title {
+            font-size: 1.25em;
+            font-weight: 700;
+            color: #8E54E9;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        .reel-empty-btn {
+            background: linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 0;
+            font-size: 1.12rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            letter-spacing: 0.5px;
+            transition: background 0.18s;
+        }
+        .reel-empty-btn:active {
+            background: linear-gradient(90deg,#8E54E9 0%,#4776E6 100%);
+        }
+        @media (max-width: 700px) {
+            .reel-card, .reel-empty-box {
+                max-width: 98vw;
+                padding: 18px 8px 14px 8px;
+            }
+            .reel-image {
+                max-height: 40vh;
+            }
+        }
+        .like-btn.liked .like-heart {
+            animation: likePop 0.18s;
+        }
+        @keyframes likePop {
+            0% { transform: scale(1); }
+            60% { transform: scale(1.4); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="reel-container">
+        <button id="close-reel" style="position:absolute;top:18px;right:18px;z-index:10;background:rgba(30,30,30,0.7);border:none;color:#fff;font-size:2.2em;border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.18s;box-shadow:0 2px 8px rgba(0,0,0,0.13);">&times;</button>
+        <div class="reel-nav">
+            <button class="reel-btn" id="prev-btn">&#8592;</button>
+            <button class="reel-btn" id="next-btn">&#8594;</button>
+        </div>
+        <div id="reel-content"></div>
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let posts = [];
+        let current = 0;
+        // Tüm postları çek (archived:false olanlar)
+        fetch('http://192.168.1.103:3001/api/posts-all')
+            .then(r => r.json())
+            .then(data => {
+                console.log('Gelen veri:', data); // Debug için
+                posts = (data.posts || []).filter(post => !post.archived && post.imageUrl);
+                console.log('Filtrelenmiş postlar:', posts); // Debug için
+                if (posts.length === 0) {
+                    showEmptyBox();
+                } else {
+                    showReel(0);
+                }
+            })
+            .catch(err => {
+                console.error('Hata:', err); // Debug için
+                showEmptyBox();
+            });
+
+        function showReel(idx) {
+            if (!posts[idx]) return;
+            current = idx;
+            const post = posts[idx];
+            let user = null;
+            try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+            const liked = user && post.likes && post.likes.includes(user.username);
+            document.getElementById('reel-content').innerHTML = `
+                <div class="reel-card">
+                    <img src="${post.imageUrl}" class="reel-image" alt="Akış görseli">
+                    <div class="reel-username">${post.username || ''}</div>
+                    <div class="reel-caption">${post.caption || ''}</div>
+                    <div class="reel-date">${post.createdAt ? new Date(post.createdAt).toLocaleString('tr-TR') : ''}</div>
+                    <div style="display:flex;gap:16px;margin-top:12px;color:#aaa;font-size:0.9em;align-items:center;">
+                        <button id="like-btn-${post._id}" class="like-btn${liked ? ' liked' : ''}" style="background:none;border:none;outline:none;cursor:pointer;font-size:1.5em;transition:transform 0.18s;display:flex;align-items:center;justify-content:center;">
+                            <span class="like-heart" style="display:inline-block;transition:transform 0.18s;">${liked ? '❤️' : '🤍'}</span>
+                        </button>
+                        <span id="likes-count-${post._id}">${post.likes ? post.likes.length : 0} beğeni</span>
+                        <button id="comment-toggle-btn-${post._id}" class="comment-toggle-btn" style="background:none;border:none;outline:none;cursor:pointer;font-size:1.3em;display:flex;align-items:center;justify-content:center;">💬</button>
+                    </div>
+                    <div class="comments-section" id="comments-section-${post._id}" style="width:100%;margin-top:18px;max-height:120px;overflow-y:auto;background:#202020;display:none;"></div>
+                    <form class="comment-form" id="comment-form-${post._id}" style="display:none;gap:8px;margin-top:8px;width:100%;">
+                        <input type="text" class="comment-input" id="comment-input-${post._id}" placeholder="Yorum yaz..." required style="flex:1;padding:8px;border-radius:8px;border:1px solid #ccc;">
+                        <button type="submit" class="comment-submit" style="background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;">Gönder</button>
+                    </form>
+                </div>
+            `;
+            showCommentsInline(post);
+            bindCommentForm(post);
+            bindLikeButton(post, user);
+            bindCommentToggle(post);
+        }
+
+        function showCommentsInline(post) {
+            const commentsSection = document.getElementById(`comments-section-${post._id}`);
+            if (!post.comments || post.comments.length === 0) {
+                commentsSection.innerHTML = '<div style="color:#888;text-align:center;padding:8px;">Henüz yorum yok.</div>';
+                return;
+            }
+            commentsSection.innerHTML = post.comments.map(comment => `
+                <div style="background:#232323;padding:8px 12px;border-radius:8px;margin-bottom:6px;">
+                    <span style="font-weight:600;color:#8E54E9;">${comment.username}</span>
+                    <span style="color:#aaa;font-size:0.9em;margin-left:8px;">${new Date(comment.createdAt).toLocaleString('tr-TR')}</span>
+                    <div style="color:#fff;margin-top:2px;">${comment.text}</div>
+                </div>
+            `).join('');
+        }
+
+        function bindCommentForm(post) {
+            const form = document.getElementById(`comment-form-${post._id}`);
+            const input = document.getElementById(`comment-input-${post._id}`);
+            form.onsubmit = async function(e) {
+                e.preventDefault();
+                const text = input.value.trim();
+                if (!text) return;
+                let user = null;
+                try {
+                    user = JSON.parse(localStorage.getItem('user'));
+                } catch(e) {}
+                if (!user || !user.username) {
+                    alert('Yorum yapmak için giriş yapmalısınız!');
+                    window.location.href = 'giris.html';
+                    return;
+                }
+                try {
+                    const response = await fetch('http://192.168.1.103:3001/api/post/comment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            postId: post._id,
+                            username: user.username,
+                            text: text
+                        })
+                    });
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.error || 'Yorum eklenemedi!');
+                    post.comments = data.comments;
+                    input.value = '';
+                    showCommentsInline(post);
+                } catch (err) {
+                    alert('Yorum eklenirken hata oluştu!');
+                }
+            };
+        }
+
+        function bindLikeButton(post, user) {
+            const btn = document.getElementById(`like-btn-${post._id}`);
+            if (!btn) return;
+            btn.onclick = async function() {
+                if (!user || !user.username) {
+                    alert('Beğenmek için giriş yapmalısınız!');
+                    window.location.href = 'giris.html';
+                    return;
+                }
+                btn.disabled = true;
+                try {
+                    const response = await fetch('http://192.168.1.103:3001/api/post/like', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ postId: post._id, username: user.username })
+                    });
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.error || 'Beğeni işlemi başarısız!');
+                    post.likes = data.likes;
+                    const liked = post.likes.includes(user.username);
+                    // Animasyon
+                    const heart = btn.querySelector('.like-heart');
+                    heart.textContent = liked ? '❤️' : '🤍';
+                    btn.classList.toggle('liked', liked);
+                    heart.style.transform = 'scale(1.4)';
+                    setTimeout(() => { heart.style.transform = 'scale(1)'; }, 180);
+                    document.getElementById(`likes-count-${post._id}`).textContent = `${post.likes.length} beğeni`;
+                } catch (err) {
+                    alert('Beğeni işlemi sırasında hata oluştu!');
+                } finally {
+                    btn.disabled = false;
+                }
+            };
+        }
+
+        function bindCommentToggle(post) {
+            const btn = document.getElementById(`comment-toggle-btn-${post._id}`);
+            const commentsSection = document.getElementById(`comments-section-${post._id}`);
+            const commentForm = document.getElementById(`comment-form-${post._id}`);
+            btn.onclick = function() {
+                const isOpen = commentsSection.style.display !== 'none';
+                if (isOpen) {
+                    commentsSection.style.display = 'none';
+                    commentForm.style.display = 'none';
+                } else {
+                    commentsSection.style.display = 'block';
+                    commentForm.style.display = 'flex';
+                }
+            };
+        }
+
+        function showEmptyBox() {
+            document.getElementById('reel-content').innerHTML = `
+                <div class="reel-empty-box">
+                    <div class="reel-empty-title">Sen de NFT paylaş!</div>
+                    <button class="reel-empty-btn" id="create-post-btn">Gönderi Oluştur</button>
+                </div>
+            `;
+            document.getElementById('create-post-btn').onclick = function() {
+                window.location.href = 'paylasim_onay.html';
+            };
+        }
+        document.getElementById('prev-btn').onclick = function() {
+            if (posts.length === 0) return;
+            if (current > 0) showReel(current - 1);
+        };
+        document.getElementById('next-btn').onclick = function() {
+            if (posts.length === 0) return;
+            if (current < posts.length - 1) {
+                showReel(current + 1);
+            } else {
+                showEmptyBox();
+                current = posts.length; // sona geldik
+            }
+        };
+        document.addEventListener('keydown', function(e) {
+            if (posts.length === 0) return;
+            if (e.key === 'ArrowLeft' && current > 0) showReel(current - 1);
+            if (e.key === 'ArrowRight') {
+                if (current < posts.length - 1) {
+                    showReel(current + 1);
+                } else {
+                    showEmptyBox();
+                    current = posts.length;
+                }
+            }
+        });
+        document.getElementById('close-reel').onclick = function() {
+            window.location.href = 'Untitled-1.html';
+        };
+    });
+    </script>
+</body>
+</html> 

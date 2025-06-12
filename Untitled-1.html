@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolanaGram - Social Media NFT Platform</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+        header {
+            background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+            color: #fff;
+            padding: 0;
+            min-height: 72px;
+            border-bottom: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 72px;
+        }
+        #branding {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #branding h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #branding .logo-icon {
+            font-size: 1.5em;
+            margin-right: 2px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 18px;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            display: flex;
+            align-items: center;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 22px;
+            transition: background 0.18s, color 0.18s;
+            position: relative;
+        }
+        nav ul li a:hover, nav ul li a.active {
+            background: rgba(255,255,255,0.13);
+            color: #f0f2f5;
+        }
+        @media (max-width: 700px) {
+            html, body { max-width: 100vw; overflow-x: hidden; }
+            .main-layout, .container, .create-post, .feedback-box, .post { max-width: 100vw; box-sizing: border-box; }
+            img, button, input, textarea { max-width: 100%; box-sizing: border-box; }
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                height: auto;
+                padding: 16px;
+                gap: 10px;
+            }
+            nav ul {
+                flex-wrap: wrap;
+                gap: 8px;
+                width: 100%;
+            }
+            nav ul li {
+                width: 100%;
+            }
+            nav ul li a {
+                display: block;
+                text-align: center;
+                padding: 12px;
+            }
+            .main-layout {
+                flex-direction: column;
+                padding: 0 16px;
+                gap: 20px;
+            }
+            .left-col {
+                flex: none;
+                width: 100%;
+            }
+            .right-col {
+                width: 100%;
+            }
+            .create-post {
+                margin: 20px 0;
+                padding: 24px 20px;
+            }
+            .wallet-connect {
+                width: 100%;
+                margin: 5px 0;
+                text-align: center;
+            }
+        }
+        @media (max-width: 480px) {
+            .main-layout {
+                padding: 0 12px;
+            }
+            .create-post {
+                padding: 20px 16px;
+                margin: 16px 0;
+            }
+            .create-post h2 {
+                font-size: 1.2rem;
+            }
+            .create-post p {
+                font-size: 0.9rem;
+            }
+            #create-post-form textarea {
+                padding: 12px;
+                font-size: 16px;
+            }
+            .custom-file-label {
+                padding: 10px 14px;
+                font-size: 0.95rem;
+            }
+            .mint-button {
+                width: 100%;
+                padding: 12px 0;
+                font-size: 1rem;
+            }
+        }
+        .main-layout {
+            display: flex;
+            gap: 32px;
+            max-width: 1100px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+        .left-col {
+            flex: 0 0 420px;
+        }
+        .right-col {
+            flex: 1 1 0%;
+        }
+        .wallet-connect {
+            background: linear-gradient(45deg, #FF512F, #DD2476);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            float: right;
+            margin: 10px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: none;
+        }
+        .wallet-connect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .mint-button {
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        .mint-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .create-post {
+            background: rgba(255,255,255,0.95);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(60,60,120,0.10);
+            padding: 32px 28px 24px 28px;
+            margin: 40px 0;
+            max-width: 420px;
+            position: relative;
+            overflow: hidden;
+            border: 1.5px solid #f3f3fa;
+            transition: box-shadow 0.2s;
+        }
+        .create-post h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .create-post h2::before {
+            content: "🖼️";
+            font-size: 1.2em;
+            margin-right: 4px;
+        }
+        .create-post p {
+            color: #888;
+            font-size: 0.98rem;
+            margin-bottom: 18px;
+        }
+        #create-post-form textarea {
+            width: 100%;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 14px;
+            font-size: 1rem;
+            background: #fafbff;
+            transition: border-color 0.2s;
+        }
+        #create-post-form textarea:focus {
+            border-color: #8E54E9;
+            outline: none;
+        }
+        .custom-file-input {
+            display: none;
+        }
+        .custom-file-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+            color: #fff;
+            border-radius: 10px;
+            padding: 12px 18px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 14px;
+            border: none;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(142,84,233,0.08);
+        }
+        .custom-file-label:hover {
+            background: linear-gradient(90deg, #8E54E9 0%, #4776E6 100%);
+            box-shadow: 0 4px 16px rgba(142,84,233,0.13);
+        }
+        .file-name {
+            color: #555;
+            font-size: 0.97em;
+            margin-left: 8px;
+            font-style: italic;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        #create-post-form .mint-button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1.08rem;
+            padding: 12px 0;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+            box-shadow: 0 2px 8px rgba(142,84,233,0.08);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        #create-post-form .mint-button:hover {
+            background: linear-gradient(90deg, #8E54E9 0%, #4776E6 100%);
+            box-shadow: 0 4px 16px rgba(142,84,233,0.13);
+        }
+        .info-banner {
+        background: linear-gradient(45deg, #FFB75E, #ED8F03);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 20px 0;
+        text-align: center;
+        font-size: 16px;
+    }
+    .post {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 30px;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+        padding: 20px;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .post-image {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <div id="branding" style="display:flex;align-items:center;gap:10px;">
+                <img src="archiveMe-logo.png" alt="ArchiveMe Logo" style="height:56px;width:56px;object-fit:contain;">
+                <h1 style="font-size:1.6rem;font-weight:700;margin:0;letter-spacing:1px;display:flex;align-items:center;gap:8px;">
+                    <a href="Untitled-1.html" style="color:inherit;text-decoration:none;">ArchiveMe</a>
+                </h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" id="connect-wallet" class="wallet-connect">Cüzdan Bağla</a></li>
+                    <li><a href="#" id="akis-link">Akış</a></li>
+                    <li id="bakiye-nav-item" style="display:none;"><a href="#" id="bakiye-link" style="color:#fff;font-weight:500;cursor:pointer;text-decoration:none;">Bakiye: <span id="bakiye-goster">0 TL</span></a></li>
+                    <li id="login-nav-item"><a href="giris.html" id="login-link" style="background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border-radius:22px;padding:8px 18px;font-weight:500;">Giriş Yap / Kaydol</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container main-layout">
+        <div class="left-col">
+            <div class="create-post" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                <button id="yeni-gonderi-btn" class="mint-button" style="width:100%;font-size:1.1rem;padding:18px 0;">Yeni Gönderi Oluştur</button>
+            </div>
+            <div class="feedback-box" style="background:rgba(255,255,255,0.95);border-radius:18px;box-shadow:0 8px 32px rgba(60,60,120,0.10);padding:32px 28px 24px 28px;margin:40px 0;max-width:420px;position:relative;overflow:hidden;border:1.5px solid #f3f3fa;transition:box-shadow 0.2s;">
+                <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:1.3em;">📝</span> Geri Bildirim Anketi
+                </h2>
+                <p style="color:#888;font-size:0.98rem;margin-bottom:18px;">Gelişim için görüşlerinize ihtiyacımız var! Lütfen aşağıdaki Google anketini doldurun.</p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeRlleWVV5DsiX51yisw-JAY-h6xKG0kWsdA1ZaKEt-VXxlbw/viewform?usp=sharing&ouid=100071863220626307087" target="_blank" style="display:inline-block;padding:12px 24px;background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border-radius:10px;font-weight:500;text-decoration:none;transition:background 0.2s;">Ankete Katıl</a>
+            </div>
+        </div>
+        <div class="right-col">
+            <div class="feed" id="feed">
+                <!-- Posts will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Pop-up modal -->
+    <div id="login-popup" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.35);z-index:999;align-items:center;justify-content:center;">
+        <div style="background:#fff;padding:32px 28px;border-radius:16px;box-shadow:0 8px 32px rgba(60,60,120,0.18);max-width:340px;width:90%;text-align:center;">
+            <h3 style="margin-bottom:16px;font-size:1.15rem;">Gönderi oluşturabilmeniz için hesabınızın olması gerekiyor.</h3>
+            <button id="popup-login-btn" style="background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:1.05rem;font-weight:500;cursor:pointer;">Giriş Yap / Kaydol</button>
+            <br><br>
+            <button id="popup-close-btn" style="background:#eee;color:#333;border:none;border-radius:10px;padding:8px 18px;font-size:0.98rem;cursor:pointer;">Kapat</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest"></script>
+    <script src="https://unpkg.com/@solana/wallet-adapter-phantom@latest/lib/index.iife.min.js"></script>
+    <script>
+        // ... existing connection code ...
+    
+        document.getElementById('yeni-gonderi-btn').onclick = function() {
+            var user = null;
+            try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+            if (!user || !user.username) {
+                document.getElementById('login-popup').style.display = 'flex';
+                return;
+            }
+            window.location.href = 'paylasim_onay.html';
+        };
+
+        document.getElementById('popup-login-btn').onclick = function() {
+            window.location.href = 'giris.html';
+        };
+
+        document.getElementById('popup-close-btn').onclick = function() {
+            document.getElementById('login-popup').style.display = 'none';
+        };
+
+        document.getElementById('akis-link').onclick = function(e) {
+            e.preventDefault();
+            var user = null;
+            try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+            if (user && user.username) {
+                window.location.href = 'akis.html';
+            } else {
+                window.location.href = 'giris.html';
+            }
+        };
+
+        // Rastgele örnek gönderiler
+        function createPostElement(imageUrl, caption) {
+            const post = document.createElement('div');
+            post.className = 'post';
+            post.innerHTML = `
+                <img src="${imageUrl}" class="post-image">
+                <p>${caption}</p>
+                <div class="post-actions">
+                    <span>❤️ 0</span>
+                </div>
+            `;
+            return post;
+        }
+
+        function guncelleBakiyeGoster() {
+            var user = null;
+            try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+            var bakiyeSpan = document.getElementById('bakiye-goster');
+            if (user && user.username === 'admin') {
+                bakiyeSpan.textContent = '∞ TL';
+            } else if (user && user.username) {
+                fetch(`http://localhost:3001/api/balance?username=${encodeURIComponent(user.username)}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.balance !== undefined) {
+                            bakiyeSpan.textContent = Number(data.balance).toFixed(2) + ' TL';
+                        } else {
+                            bakiyeSpan.textContent = '0.00 TL';
+                        }
+                    })
+                    .catch(() => {
+                        bakiyeSpan.textContent = '0.00 TL';
+                    });
+            } else {
+                bakiyeSpan.textContent = '0.00 TL';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            // Kullanıcı adı nav güncellemesi
+            var user = null;
+            try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+            var loginNavItem = document.getElementById('login-nav-item');
+            var bakiyeNavItem = document.getElementById('bakiye-nav-item');
+            if (user && user.username) {
+                loginNavItem.innerHTML = `<a href=\"profil.html\" id=\"user-link\" style=\"background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border-radius:22px;padding:8px 18px;font-weight:500;\">${user.username}</a>`;
+                if (bakiyeNavItem) {
+                    bakiyeNavItem.style.display = '';
+                    var bakiyeSpan = document.getElementById('bakiye-goster');
+                    if (user.username === 'admin') {
+                        bakiyeSpan.textContent = '∞ TL';
+                    } else {
+                        let bakiyeler = JSON.parse(localStorage.getItem('bakiyeler') || '{}');
+                        let bakiye = bakiyeler[user.username] || 0;
+                        bakiyeSpan.textContent = bakiye + ' TL';
+                    }
+                }
+            } else {
+                if (bakiyeNavItem) bakiyeNavItem.style.display = 'none';
+            }
+            // Örnek gönderiler
+            const samplePosts = [
+                { image: 'https://picsum.photos/500/500?random=1', caption: 'Yeni bir NFT paylaştım!' },
+                { image: 'https://picsum.photos/500/500?random=2', caption: 'SolanaGram ile anımı ölümsüzleştiriyorum.' },
+                { image: 'https://picsum.photos/500/500?random=3', caption: 'Paylaşmak güzeldir.' },
+                { image: 'https://picsum.photos/500/500?random=4', caption: 'NFT dünyasına bir adım daha!' }
+            ];
+            samplePosts.forEach(post => {
+                const postElement = createPostElement(post.image, post.caption);
+                document.getElementById('feed').appendChild(postElement);
+            });
+            guncelleBakiyeGoster();
+            var bakiyeLink = document.getElementById('bakiye-link');
+            if (bakiyeLink) {
+                bakiyeLink.onclick = function(e) {
+                    e.preventDefault();
+                    window.location.href = 'bakiye.html';
+                };
+            }
+        });
+    </script>
+</body>
+</html>

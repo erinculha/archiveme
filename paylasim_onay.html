@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paylaşım Onayı - SolanaGram</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+        header {
+            background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+            color: #fff;
+            padding: 0;
+            min-height: 72px;
+            border-bottom: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 72px;
+        }
+        #branding {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #branding h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #branding .logo-icon {
+            font-size: 1.5em;
+            margin-right: 2px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 18px;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            display: flex;
+            align-items: center;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 22px;
+            transition: background 0.18s, color 0.18s;
+            position: relative;
+        }
+        nav ul li a:hover, nav ul li a.active {
+            background: rgba(255,255,255,0.13);
+            color: #f0f2f5;
+        }
+        @media (max-width: 700px) {
+            html, body { max-width: 100vw; overflow-x: hidden; }
+            .container { max-width: 100vw; box-sizing: border-box; }
+            img, button, input, textarea { max-width: 100%; box-sizing: border-box; }
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                height: auto;
+                padding: 16px;
+                gap: 10px;
+            }
+            nav ul {
+                flex-wrap: wrap;
+                gap: 8px;
+                width: 100%;
+            }
+            nav ul li {
+                width: 100%;
+            }
+            nav ul li a {
+                display: block;
+                text-align: center;
+                padding: 12px;
+            }
+            .container {
+                margin: 30px auto;
+                padding: 24px;
+                width: 90%;
+            }
+            .preview-img {
+                max-height: 220px;
+            }
+            .file-label {
+                width: 100%;
+                justify-content: center;
+            }
+            .file-name {
+                max-width: 140px;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                margin: 20px auto;
+                padding: 20px;
+            }
+            h2 {
+                font-size: 1.2rem;
+            }
+            .preview-img {
+                max-height: 200px;
+            }
+            .caption-input {
+                padding: 12px;
+                font-size: 16px;
+            }
+            .fee-box {
+                font-size: 1rem;
+                padding: 10px 14px;
+            }
+            .onay-btn {
+                padding: 12px 0;
+                font-size: 1rem;
+            }
+            .file-label {
+                padding: 10px 14px;
+                font-size: 0.95rem;
+            }
+        }
+        .container {
+            max-width: 420px;
+            margin: 48px auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(60,60,120,0.10);
+            padding: 36px 32px 28px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
+            color: #333;
+        }
+        .file-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+            color: #fff;
+            border-radius: 10px;
+            padding: 12px 18px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 18px;
+            border: none;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(142,84,233,0.08);
+        }
+        .file-label:hover {
+            background: linear-gradient(90deg, #8E54E9 0%, #4776E6 100%);
+            box-shadow: 0 4px 16px rgba(142,84,233,0.13);
+        }
+        .file-name {
+            color: #555;
+            font-size: 0.97em;
+            margin-left: 8px;
+            font-style: italic;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .preview-img {
+            width: 100%;
+            max-height: 260px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            display: none;
+        }
+        .caption-input {
+            width: 100%;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 18px;
+            font-size: 1rem;
+            background: #fafbff;
+            transition: border-color 0.2s;
+        }
+        .caption-input:focus {
+            border-color: #8E54E9;
+            outline: none;
+        }
+        .fee-box {
+            background: #f7f7fa;
+            border-radius: 8px;
+            padding: 12px 18px;
+            margin-bottom: 18px;
+            font-size: 1.05rem;
+            color: #555;
+            width: 100%;
+            text-align: center;
+        }
+        .onay-btn {
+            background: linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 0;
+            font-size: 1.08rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .onay-btn:hover {
+            background: linear-gradient(90deg,#8E54E9 0%,#4776E6 100%);
+        }
+        @keyframes popupFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes successPulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <div id="branding" style="display:flex;align-items:center;gap:10px;">
+                <img src="archiveMe-logo.png" alt="ArchiveMe Logo" style="height:56px;width:56px;object-fit:contain;">
+                <h1 style="font-size:1.6rem;font-weight:700;margin:0;letter-spacing:1px;display:flex;align-items:center;gap:8px;">
+                    <a href="Untitled-1.html" style="color:inherit;text-decoration:none;">ArchiveMe</a>
+                </h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" id="connect-wallet" class="wallet-connect">Cüzdan Bağla</a></li>
+                    <li><a href="#" id="akis-link">Akış</a></li>
+                    <li id="bakiye-nav-item" style="display:none;"><a href="#" id="bakiye-link" style="color:#fff;font-weight:500;cursor:pointer;text-decoration:none;">Bakiye: <span id="bakiye-goster">0 TL</span></a></li>
+                    <li id="login-nav-item"><a href="giris.html" id="login-link" style="background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border-radius:22px;padding:8px 18px;font-weight:500;">Giriş Yap / Kaydol</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <h2>Yeni Gönderi Oluştur</h2>
+        <form id="paylasim-form" style="width:100%;display:flex;flex-direction:column;align-items:center;">
+            <label class="file-label" for="paylasim-image">
+                <span style="font-size:1.2em;">📁</span> Fotoğraf Seç
+                <span class="file-name" id="file-name">Dosya seçilmedi</span>
+                <input type="file" id="paylasim-image" style="display:none;" accept="image/*" required>
+            </label>
+            <img id="preview-img" class="preview-img" src="" alt="Fotoğraf Önizleme">
+            <textarea id="paylasim-caption" class="caption-input" placeholder="Açıklama yaz..." required></textarea>
+            <div class="fee-box">Cloud Ücreti: <b id="fee">19,90 TL</b></div>
+            <button type="submit" class="onay-btn">Paylaşımı Onayla ve NFT Oluştur</button>
+        </form>
+    </div>
+    <div id="bakiye-popup" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.35);z-index:999;align-items:center;justify-content:center;">
+        <div style="background:#fff;padding:32px 28px;border-radius:16px;box-shadow:0 8px 32px rgba(60,60,120,0.18);max-width:340px;width:90%;text-align:center;">
+            <h3 style="margin-bottom:16px;font-size:1.15rem;">Paylaşım için yeterli bakiyeniz yok!</h3>
+            <p style="margin-bottom:18px;">Lütfen bakiye yükleyin.</p>
+            <button id="bakiye-yukle-btn" style="background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:1.05rem;font-weight:500;cursor:pointer;">Bakiye Yükle</button>
+            <br><br>
+            <button id="bakiye-popup-close-btn" style="background:#eee;color:#333;border:none;border-radius:10px;padding:8px 18px;font-size:0.98rem;cursor:pointer;">Kapat</button>
+        </div>
+    </div>
+    <!-- Başarılı paylaşım popup'ı -->
+    <div id="success-popup" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.35);z-index:999;align-items:center;justify-content:center;">
+        <div style="background:#fff;padding:32px 28px;border-radius:16px;box-shadow:0 8px 32px rgba(60,60,120,0.18);max-width:340px;width:90%;text-align:center;animation:popupFadeIn 0.3s ease-out;">
+            <div style="width:80px;height:80px;margin:0 auto 20px;background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:successPulse 1s ease-in-out;">
+                <span style="font-size:2.5em;color:#fff;">✓</span>
+            </div>
+            <h3 style="margin-bottom:12px;font-size:1.25rem;color:#333;font-weight:600;">Paylaşım Başarılı!</h3>
+            <p style="margin-bottom:24px;color:#666;line-height:1.5;">NFT işlemi başlatıldı. Gönderiniz akışta görünecek.</p>
+            <button id="success-popup-close-btn" style="background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:1.05rem;font-weight:500;cursor:pointer;transition:transform 0.2s;">Tamam</button>
+        </div>
+    </div>
+    <script>
+    // Kullanıcı adı gösterimi için nav güncellemesi (diğer sayfalardaki gibi)
+    window.addEventListener('DOMContentLoaded', function() {
+        var user = null;
+        try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+        var loginNavItem = document.getElementById('login-nav-item');
+        var bakiyeNavItem = document.getElementById('bakiye-nav-item');
+        if (user && user.username) {
+            loginNavItem.innerHTML = `<a href=\"profil.html\" id=\"user-link\" style=\"background:linear-gradient(90deg,#4776E6 0%,#8E54E9 100%);color:#fff;border-radius:22px;padding:8px 18px;font-weight:500;\">${user.username}</a>`;
+            if (bakiyeNavItem) {
+                bakiyeNavItem.style.display = '';
+                guncelleBakiyeGoster();
+            }
+        } else {
+            if (bakiyeNavItem) bakiyeNavItem.style.display = 'none';
+        }
+        var bakiyeLink = document.getElementById('bakiye-link');
+        if (bakiyeLink) {
+            bakiyeLink.onclick = function(e) {
+                e.preventDefault();
+                window.location.href = 'bakiye.html';
+            };
+        }
+    });
+    // Dosya seçildiğinde önizleme ve dosya adı göster
+    const paylasimImageInput = document.getElementById('paylasim-image');
+    const fileNameSpan = document.getElementById('file-name');
+    const previewImg = document.getElementById('preview-img');
+    paylasimImageInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            fileNameSpan.textContent = this.files[0].name;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+            };
+            reader.readAsDataURL(this.files[0]);
+        } else {
+            fileNameSpan.textContent = 'Dosya seçilmedi';
+            previewImg.style.display = 'none';
+        }
+    });
+    // Form submit
+    document.getElementById('paylasim-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        if (!paylasimImageInput.files[0]) {
+            alert('Lütfen bir fotoğraf seçin!');
+            return;
+        }
+        if (!document.getElementById('paylasim-caption').value.trim()) {
+            alert('Lütfen bir açıklama yazın!');
+            return;
+        }
+        var user = null;
+        try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+        if (!user || !user.username) {
+            alert('Giriş yapmalısınız!');
+            return;
+        }
+        if (user.username === 'admin') {
+            // Admin için bakiye kontrolü yok
+            await paylasimGonder(user.username);
+            return;
+        }
+        try {
+            const response = await fetch(`http://localhost:3001/api/balance?username=${encodeURIComponent(user.username)}`);
+            const data = await response.json();
+            if (!response.ok || typeof data.balance !== 'number' || data.balance < 19.9) {
+                document.getElementById('bakiye-popup').style.display = 'flex';
+                return;
+            }
+            await paylasimGonder(user.username);
+        } catch (err) {
+            alert('Bakiye kontrolü sırasında hata oluştu!');
+        }
+    });
+    document.getElementById('bakiye-yukle-btn').onclick = function() {
+        window.location.href = 'bakiye.html';
+    };
+    document.getElementById('bakiye-popup-close-btn').onclick = function() {
+        document.getElementById('bakiye-popup').style.display = 'none';
+    };
+    function guncelleBakiyeGoster() {
+        var user = null;
+        try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+        var bakiyeSpan = document.getElementById('bakiye-goster');
+        if (user && user.username === 'admin') {
+            bakiyeSpan.textContent = '∞ TL';
+        } else if (user && user.username) {
+            fetch(`http://localhost:3001/api/balance?username=${encodeURIComponent(user.username)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.balance !== undefined) {
+                        bakiyeSpan.textContent = Number(data.balance).toFixed(2) + ' TL';
+                    } else {
+                        bakiyeSpan.textContent = '0.00 TL';
+                    }
+                })
+                .catch(() => {
+                    bakiyeSpan.textContent = '0.00 TL';
+                });
+        } else {
+            bakiyeSpan.textContent = '0.00 TL';
+        }
+    }
+    async function paylasimGonder(username) {
+        // Fotoğrafı base64 olarak backend'e gönderiyoruz (gerçek projede dosya upload önerilir)
+        const file = document.getElementById('paylasim-image').files[0];
+        const caption = document.getElementById('paylasim-caption').value.trim();
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const imageUrl = e.target.result; // base64 string
+            try {
+                const response = await fetch('http://localhost:3001/api/post', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, imageUrl, caption })
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    alert(data.error || 'Paylaşım başarısız!');
+                    return;
+                }
+                // Başarılı popup'ı göster
+                document.getElementById('success-popup').style.display = 'flex';
+                // 2 saniye sonra ana sayfaya yönlendir
+                setTimeout(() => {
+                    window.location.href = 'Untitled-1.html';
+                }, 2000);
+            } catch (err) {
+                alert('Sunucuya bağlanılamadı!');
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+    document.getElementById('success-popup-close-btn').onclick = function() {
+        window.location.href = 'Untitled-1.html';
+    };
+    document.getElementById('akis-link').onclick = function(e) {
+        e.preventDefault();
+        var user = null;
+        try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+        if (user && user.username) {
+            window.location.href = 'akis.html';
+        } else {
+            window.location.href = 'giris.html';
+        }
+    };
+    </script>
+</body>
+</html> 
